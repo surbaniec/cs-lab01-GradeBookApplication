@@ -31,32 +31,40 @@ namespace GradeBook.UserInterfaces
                 Console.WriteLine("{0} was not recognized, please try again.", command);
         }
 
-        public static BaseGradeBook CreateCommand(string command)
+        public static void CreateCommand(string command)
         {
             var parts = command.Split(' ');
             if (parts.Length != 4)
             {
                 Console.WriteLine("Command not valid, Create requires a name, type of gradebook, if it's weighted (true / false).");
-                return null;
+                return;
             }
             var name = parts[1];
-            //BaseGradeBook gradeBook = new BaseGradeBook(name);
-            //Console.WriteLine("Created gradebook {0}.", name);
-            //GradeBookUserInterface.CommandLoop(gradeBook);
-            bool IsWeighted = bool.Parse(parts[3]);
-            if(parts[2] == "standard")
+            var type = parts[2];
+            var isWeighted = false;
+
+            if (parts[3] == "true")
             {
-                return new StandardGradeBook(name, IsWeighted);
+                isWeighted = true;
             }
-            else if(parts[2] == "ranked")
+
+            BaseGradeBook gradeBook = null;
+            if (type == "standard")
             {
-                return new RankedGradeBook(name, IsWeighted);
+                gradeBook = new StandardGradeBook(name, isWeighted);
+
+            }
+            else if (type == "ranked")
+            {
+                gradeBook = new RankedGradeBook(name, isWeighted);
             }
             else
             {
-                Console.WriteLine("${parts[2]} is not a supported type of gradebook, please try again");
-                return null;
+                Console.WriteLine(type + "is not a supported type of gradebook, please try again");
             }
+
+            Console.WriteLine("Created gradebook {0}.", name);
+            GradeBookUserInterface.CommandLoop(gradeBook);
         }
 
         public static void LoadCommand(string command)
